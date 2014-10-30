@@ -94,8 +94,7 @@ RUN cd /usr/local/tomcat/webapps/WebApollo/jbrowse/ && chmod 755 bin/* && ln -sf
     --arrowheadClass webapollo-arrowhead --getSubfeatures \
     --subfeatureClasses '{"match_part": "darkblue-80pct"}' \
     --className container-10px --trackLabel blastn \
-    && mkdir data/bam && cp /usr/local/webapollo/webapollo_sample/*.bam* data/bam \
-
+    && mkdir data/bam && cp /usr/local/webapollo/webapollo_sample/*.bam* data/bam
 COPY ./startup.sh /startup.sh
 RUN chmod +x /startup.sh
 CMD ["/startup.sh"]
