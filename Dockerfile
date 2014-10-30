@@ -76,7 +76,7 @@ RUN wget http://icebox.lbl.gov/webapollo/releases/WebApollo-2014-04-03.tgz -O /t
     && cd /usr/local/webapollo && tar xvfz /tmp/webapollo.tgz \
     && mv WebApollo*/* . && rmdir WebApollo* && rm /tmp/webapollo.tgz
 RUN cd /usr/local/webapollo/ && wget http://icebox.lbl.gov/webapollo/data/pyu_data.tgz && tar xvfz pyu_data.tgz && rm pyu_data.tgz \
-    && mkdir -p /usr/local/webapollo/webapollo_sample && mv pyu_data/* /usr/local/webapollo/webapollo_sample/ && rm pyu_data.tgz
+    && mkdir -p /usr/local/webapollo/webapollo_sample && mv pyu_data/* /usr/local/webapollo/webapollo_sample/
 
 RUN cp /usr/local/webapollo/tomcat/custom-valves.jar /usr/local/tomcat/lib && cd /usr/local/tomcat/webapps && mkdir WebApollo && cd WebApollo && jar -xvf /usr/local/webapollo/war/WebApollo.war
 
