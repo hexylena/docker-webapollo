@@ -1,10 +1,7 @@
 # WebApollo
 # VERSION 0.1
-
 FROM java:7-jre
-
 MAINTAINER Eric Rasche <rasche.eric@yandex.ru>
-
 ENV DEBIAN_FRONTEND noninteractive
 
 # Taken from https://github.com/docker-library/official-images/commit/6d78950ab2b59e211f3ec9735fb7ec0da239adf9
@@ -39,26 +36,28 @@ RUN curl -SL "$TOMCAT_TGZ_URL" -o tomcat.tar.gz \
     && rm bin/*.bat \
     && rm tomcat.tar.gz*
 
-#EXPOSE 8080
-#CMD ["catalina.sh", "run"]
 RUN apt-get -qq update
-RUN apt-get --no-install-recommends -y install postgresql postgresql-client libpng-dev zlib1g zlib1g-dev build-essential make libpq-dev
-RUN apt-get -y install libperlio-gzip-perl libcapture-tiny-perl libtest-differences-perl \
-    libperlio-gzip-perl libdevel-size-perl libdbi-perl libjson-perl libjson-xs-perl libheap-perl \
-    libhash-merge-perl libdbd-pg-perl libio-string-perl libtest-most-perl libarray-compare-perl \
-    libconvert-binary-c-perl libgd-perl libgraph-perl libgraphviz-perl \
-    libsoap-lite-perl libsvg-perl libsvg-graph-perl libset-scalar-perl libsort-naturally-perl \
-    libxml-sax-perl libxml-twig-perl libxml-writer-perl libyaml-perl
+RUN apt-get --no-install-recommends -y install postgresql postgresql-client \
+    libpng-dev zlib1g zlib1g-dev build-essential make libpq-dev libperlio-gzip-perl \
+    libcapture-tiny-perl libtest-differences-perl libperlio-gzip-perl \
+    libdevel-size-perl libdbi-perl libjson-perl libjson-xs-perl libheap-perl \
+    libhash-merge-perl libdbd-pg-perl libio-string-perl libtest-most-perl \
+    libarray-compare-perl libconvert-binary-c-perl libgd-perl libgraph-perl \
+    libgraphviz-perl libsoap-lite-perl libsvg-perl libsvg-graph-perl \
+    libset-scalar-perl libsort-naturally-perl libxml-sax-perl libxml-twig-perl \
+    libxml-writer-perl libyaml-perl sudo openjdk-7-jre openjdk-7-jdk
+
 RUN curl -L http://cpanmin.us | perl - App::cpanminus
-RUN cpanm --force Test::More Heap::Simple Heap::Simple::XS # Pretend you didn't see the --force ;)
+# Some have to be forced.
+RUN cpanm --force Test::More Heap::Simple Heap::Simple::XS
+# But most install just fine
 RUN cpanm DBI Digest::Crc32 Cache::Ref::FIFO URI::Escape HTML::Entities \
     HTML::HeadParser HTML::TableExtract HTTP::Request::Common LWP XML::Parser \
     XML::Parser::PerlSAX XML::SAX::Writer XML::Simple Data::Stag \
     Error PostScript::TextBlock Spreadsheet::ParseExcel Algorithm::Munkres \
-    BioPerl Bio::GFF3::LowLevel::Parser
+    BioPerl Bio::GFF3::LowLevel::Parser File::Next
 
 ENV CATALINA_OPTS -Xms512m -Xmx1g -XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled -XX:+UseConcMarkSweepGC -XX:MaxPermSize=256m
-RUN mkdir /usr/local/webapollo/
 ENV WEB_APOLLO_DIR /usr/local/webapollo/
 ENV WEB_APOLLO_SAMPLE_DIR /usr/local/webapollo/webapollo_sample
 ENV WEB_APOLLO_DATA_DIR /data/webapollo/annotations
@@ -69,17 +68,22 @@ ENV TOMCAT_WEBAPPS_DIR /usr/local/tomcat/webapps
 ENV BLAT_DIR /usr/local/bin
 ENV BLAT_TMP_DIR /data/webapollo/blat/tmp
 ENV BLAT_DATABASE /data/webapollo/blat/db/pyu.2bit
-RUN wget http://icebox.lbl.gov/webapollo/releases/WebApollo-2014-04-03.tgz -O /tmp/webapollo.tgz
-RUN cd /usr/local/webapollo/ && wget http://icebox.lbl.gov/webapollo/data/pyu_data.tgz && tar xvfz pyu_data.tgz
-RUN cd /usr/local/webapollo && tar xvfz  /tmp/webapollo.tgz && mv WebApollo*/* . && rmdir WebApollo* && rm /tmp/webapollo.tgz
-RUN apt-get install sudo
-COPY ./pg_hba.conf //etc/postgresql/9.4/main/pg_hba.conf
-RUN cd /usr/local/webapollo/ && mkdir -p /usr/local/webapollo/webapollo_sample && mv pyu_data/* /usr/local/webapollo/webapollo_sample/ && rm pyu_data.tgz
-RUN sudo apt-get -y install openjdk-7-jre openjdk-7-jdk
+
+RUN mkdir -p /usr/local/webapollo/ && mkdir -p /data/webapollo/jbrowse/data
+
+# WebApollo Installation
+RUN wget http://icebox.lbl.gov/webapollo/releases/WebApollo-2014-04-03.tgz -O /tmp/webapollo.tgz \
+    && cd /usr/local/webapollo && tar xvfz /tmp/webapollo.tgz \
+    && mv WebApollo*/* . && rmdir WebApollo* && rm /tmp/webapollo.tgz
+RUN cd /usr/local/webapollo/ && wget http://icebox.lbl.gov/webapollo/data/pyu_data.tgz && tar xvfz pyu_data.tgz && rm pyu_data.tgz \
+    && mkdir -p /usr/local/webapollo/webapollo_sample && mv pyu_data/* /usr/local/webapollo/webapollo_sample/ && rm pyu_data.tgz
+
 RUN cp /usr/local/webapollo/tomcat/custom-valves.jar /usr/local/tomcat/lib && cd /usr/local/tomcat/webapps && mkdir WebApollo && cd WebApollo && jar -xvf /usr/local/webapollo/war/WebApollo.war
+
+COPY ./pg_hba.conf /etc/postgresql/9.4/main/pg_hba.conf
 COPY ./config.xml /usr/local/tomcat/webapps/WebApollo/config/config.xml
-RUN mkdir -p /data/webapollo/jbrowse/data
-RUN cpanm File::Next
+
+# Build default Pythium data, for some reason bigwig data isn't working yet.
 RUN cd /usr/local/tomcat/webapps/WebApollo/jbrowse/ && chmod 755 bin/* && ln -sf /data/webapollo/jbrowse/data data && bin/prepare-refseqs.pl --fasta /usr/local/webapollo/webapollo_sample/scf1117875582023.fa \
     && bin/add-webapollo-plugin.pl -i data/trackList.json && mkdir -p /usr/local/webapollo/webapollo_sample/split_gff \
     && /usr/local/webapollo/tools/data/split_gff_by_source.pl -i /usr/local/webapollo/webapollo_sample/scf1117875582023.gff -d /usr/local/webapollo/webapollo_sample/split_gff \
@@ -90,12 +94,7 @@ RUN cd /usr/local/tomcat/webapps/WebApollo/jbrowse/ && chmod 755 bin/* && ln -sf
     --arrowheadClass webapollo-arrowhead --getSubfeatures \
     --subfeatureClasses '{"match_part": "darkblue-80pct"}' \
     --className container-10px --trackLabel blastn \
-    && bin/generate-names.pl \
     && mkdir data/bam && cp /usr/local/webapollo/webapollo_sample/*.bam* data/bam \
-    && bin/add-bam-track.pl --bam_url bam/simulated-sorted.bam \ 
-    --label simulated_bam --key "simulated BAM" \
-    && mkdir data/bigwig && bin/add-bw-track.pl --bw_url bigwig/simulated-sorted.coverage.bw \ 
-    --label simulated_bw --key "simulated BigWig"
 
 COPY ./startup.sh /startup.sh
 RUN chmod +x /startup.sh
