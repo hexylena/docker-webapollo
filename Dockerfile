@@ -63,21 +63,41 @@ ENV WEB_APOLLO_DIR /usr/local/webapollo/
 ENV WEB_APOLLO_SAMPLE_DIR /usr/local/webapollo/webapollo_sample
 ENV WEB_APOLLO_DATA_DIR /data/webapollo/annotations
 ENV JBROWSE_DATA_DIR /data/webapollo/jbrowse/data
-ENV TOMCAT_LIB_DIR /usr/share/tomcat7/lib
-ENV TOMCAT_CONF_DIR /etc/tomcat7/conf
-ENV TOMCAT_WEBAPPS_DIR /var/lib/tomcat7/webapps
+ENV TOMCAT_LIB_DIR /usr/local/tomcat/lib
+ENV TOMCAT_CONF_DIR /usr/local/tomcat/conf
+ENV TOMCAT_WEBAPPS_DIR /usr/local/tomcat/webapps
 ENV BLAT_DIR /usr/local/bin
 ENV BLAT_TMP_DIR /data/webapollo/blat/tmp
 ENV BLAT_DATABASE /data/webapollo/blat/db/pyu.2bit
 RUN wget http://icebox.lbl.gov/webapollo/releases/WebApollo-2014-04-03.tgz -O /tmp/webapollo.tgz
+RUN cd /usr/local/webapollo/ && wget http://icebox.lbl.gov/webapollo/data/pyu_data.tgz && tar xvfz pyu_data.tgz
 RUN cd /usr/local/webapollo && tar xvfz  /tmp/webapollo.tgz && mv WebApollo*/* . && rmdir WebApollo* && rm /tmp/webapollo.tgz
 RUN apt-get install sudo
 COPY ./pg_hba.conf //etc/postgresql/9.4/main/pg_hba.conf
-COPY ./startup.sh /startup.sh
-RUN cd /usr/local/webapollo/ && wget http://icebox.lbl.gov/webapollo/data/pyu_data.tgz && tar xvfz pyu_data.tgz && \
-    mkdir -p /usr/local/webapollo/webapollo_sample && mv pyu_data/* \
-    /usr/local/webapollo/webapollo_sample/ && rm pyu_data.tgz
-RUN chmod +x /startup.sh
-EXPOSE 8080
-CMD ["/startup.sh"]
+RUN cd /usr/local/webapollo/ && mkdir -p /usr/local/webapollo/webapollo_sample && mv pyu_data/* /usr/local/webapollo/webapollo_sample/ && rm pyu_data.tgz
+RUN sudo apt-get -y install openjdk-7-jre openjdk-7-jdk
+RUN cp /usr/local/webapollo/tomcat/custom-valves.jar /usr/local/tomcat/lib && cd /usr/local/tomcat/webapps && mkdir WebApollo && cd WebApollo && jar -xvf /usr/local/webapollo/war/WebApollo.war
+COPY ./config.xml /usr/local/tomcat/webapps/WebApollo/config/config.xml
+RUN mkdir -p /data/webapollo/jbrowse/data
+RUN cpanm File::Next
+RUN cd /usr/local/tomcat/webapps/WebApollo/jbrowse/ && chmod 755 bin/* && ln -sf /data/webapollo/jbrowse/data data && bin/prepare-refseqs.pl --fasta /usr/local/webapollo/webapollo_sample/scf1117875582023.fa \
+    && bin/add-webapollo-plugin.pl -i data/trackList.json && mkdir -p /usr/local/webapollo/webapollo_sample/split_gff \
+    && /usr/local/webapollo/tools/data/split_gff_by_source.pl -i /usr/local/webapollo/webapollo_sample/scf1117875582023.gff -d /usr/local/webapollo/webapollo_sample/split_gff \
+    &&  bin/flatfile-to-json.pl --gff /usr/local/webapollo/webapollo_sample/split_gff/maker.gff --arrowheadClass trellis-arrowhead --getSubfeatures \
+    --subfeatureClasses '{"wholeCDS": null, "CDS":"brightgreen-80pct", "UTR": "darkgreen-60pct", "exon":"container-100pct"}' --className container-16px --type mRNA --trackLabel maker \
+    && bin/flatfile-to-json.pl --gff /usr/local/webapollo/webapollo_sample/split_gff/maker.gff --getSubfeatures --type mRNA --trackLabel maker \
+    && bin/flatfile-to-json.pl --gff /usr/local/webapollo/webapollo_sample/split_gff/blastn.gff \
+    --arrowheadClass webapollo-arrowhead --getSubfeatures \
+    --subfeatureClasses '{"match_part": "darkblue-80pct"}' \
+    --className container-10px --trackLabel blastn \
+    && bin/generate-names.pl \
+    && mkdir data/bam && cp /usr/local/webapollo/webapollo_sample/*.bam* data/bam \
+    && bin/add-bam-track.pl --bam_url bam/simulated-sorted.bam \ 
+    --label simulated_bam --key "simulated BAM" \
+    && mkdir data/bigwig && bin/add-bw-track.pl --bw_url bigwig/simulated-sorted.coverage.bw \ 
+    --label simulated_bw --key "simulated BigWig"
 
+COPY ./startup.sh /startup.sh
+RUN chmod +x /startup.sh
+CMD ["/startup.sh"]
+EXPOSE 8080
