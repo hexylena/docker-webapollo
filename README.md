@@ -19,6 +19,7 @@ With the side goals of:
 
 - Turning WebApollo into a Galaxy [Interactive Environment](https://wiki.galaxyproject.org/Admin/IEs?highlight=%28interactive%29%7C%28environment%29)
 
-## About this Container
+## TODO:
 
-Built mostly via following along with http://gmod.org/wiki/WebApollo_Installation
+- Blat
+- OAuth?
