@@ -19,11 +19,15 @@ RUN mkdir -p /webapollo/ && git clone https://github.com/GMOD/Apollo /webapollo/
     cp sample_log4j2-test.json log4j2-test.json && \
     ./apollo deploy
 
-RUN cp /webapollo/target/apollo-1.0.5-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT/ && \
-    cd /usr/local/tomcat/webapps/ROOT/ && \
-    jar xvf /usr/local/tomcat/webapps/ROOT/apollo-1.0.5-SNAPSHOT.war
-
 RUN wget http://icebox.lbl.gov/webapollo/data/pyu_data.tgz -O /usr/local/tomcat/pyu_data.tgz
+
+ENV DEPLOY_DIR /usr/local/tomcat/webapps/apollo/
+
+RUN mkdir -p $DEPLOY_DIR && \
+    cp /webapollo/target/apollo-1.0.5-SNAPSHOT.war $DEPLOY_DIR && \
+    cd $DEPLOY_DIR && \
+    jar xvf apollo-1.0.5-SNAPSHOT.war
+
 ADD startup.sh /bin/
 ADD process.sh /bin/
 RUN chmod +x /bin/startup.sh /bin/process.sh

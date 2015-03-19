@@ -3,6 +3,8 @@ webapollo:
   links:
    - db
   ports:
-   - "8085:8080"
+   - "8080:8080"
+  volumes:
+   - "tmp:/webapollo/src/main/java/org/bbop/apollo/web/Login.java"
 db:
   image: postgres

@@ -15,7 +15,7 @@ psql -U postgres -h $DB_PORT_5432_TCP_ADDR -c "CREATE USER $PGUSER NOCREATEROLE 
 psql -U postgres -h $DB_PORT_5432_TCP_ADDR -c "CREATE DATABASE $WEBAPOLLO_DATABASE ENCODING='UTF-8' OWNER=$PGUSER"
 
 
-CONFIG_FILE=$CATALINA_HOME/webapps/ROOT/config/config.properties
+CONFIG_FILE=$DEPLOY_DIR/config/config.properties
 
 sed -i "s|database.url=.*|database.url=jdbc:postgresql://$DB_PORT_5432_TCP_ADDR:5432/$WEBAPOLLO_DATABASE|g" $CONFIG_FILE
 sed -i "s|database.username=.*|database.username=$PGUSER|g" $CONFIG_FILE
