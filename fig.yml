@@ -1,4 +1,4 @@
-web:
+webapollo:
   build: .
   links:
    - db
