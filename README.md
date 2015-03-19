@@ -30,7 +30,7 @@ and you'll see the output of tomcat/webapollo as they boot. By default, the
 container includes Pythium Utlimum data. WebApollo will boot, and be available
 on localhost:8080.
 
-Please note that per #1, the port you use to access WebApollo MUST be 8080.
+Please note that per [issue #1](https://github.com/erasche/docker-webapollo/issues/1), the port you use to access WebApollo MUST be 8080.
 
 ## Building the Container Locally
 
