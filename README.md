@@ -28,7 +28,7 @@ $ docker run -i -t --link db:db erasche/webapollo
 
 and you'll see the output of tomcat/webapollo as they boot. By default, the
 container includes Pythium Utlimum data. WebApollo will boot, and be available
-on [http://localhost:8080](http://localhost:8080).
+on [http://localhost:8080/apollo/](http://localhost:8080/apollo/). The username is `web_apollo_admin` and the password is `password`.
 
 Please note that per [issue #1](https://github.com/erasche/docker-webapollo/issues/1), the port you use to access WebApollo MUST be 8080.
 
@@ -49,4 +49,3 @@ to build and bring up the two linked containers.
 - OAuth?
 - ability to add users via ENV
 - Turning WebApollo into a Galaxy [Interactive Environment](https://wiki.galaxyproject.org/Admin/IEs?highlight=%28interactive%29%7C%28environment%29)
-
