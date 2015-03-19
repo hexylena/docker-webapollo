@@ -23,12 +23,12 @@ $ docker run -d --name db postgres:9.4
 Once that container is online (give it a second or two), you can bring up the webapollo container:
 
 ```console
-docker run -i -t --link db:db erasche/webapollo
+$ docker run -i -t --link db:db erasche/webapollo
 ```
 
 and you'll see the output of tomcat/webapollo as they boot. By default, the
 container includes Pythium Utlimum data. WebApollo will boot, and be available
-on localhost:8080.
+on [http://localhost:8080](http://localhost:8080).
 
 Please note that per [issue #1](https://github.com/erasche/docker-webapollo/issues/1), the port you use to access WebApollo MUST be 8080.
 
