@@ -27,8 +27,18 @@ $ docker run -i -t --link db:db erasche/webapollo
 ```
 
 and you'll see the output of tomcat/webapollo as they boot. By default, the
-container includes Pythium Utlimum data. WebApollo will boot, and be available
-on [http://localhost:8080/apollo/](http://localhost:8080/apollo/). The username is `web_apollo_admin` and the password is `password`.
+container includes no data! If you would like to load the example Pythium
+Ultimum data, your launch command will be a little bit different:
+
+```console
+$ wget http://icebox.lbl.gov/webapollo/data/pyu_data.tgz
+$ tar xvfz pyu_data.tgz
+$ docker run -i -t -v `pwd`/pyu_data:/data --link db:db erasche/webapollo
+````
+
+WebApollo will boot, and be available on
+[http://localhost:8080/apollo/](http://localhost:8080/apollo/). The username is
+`web_apollo_admin` and the password is `password`.
 
 Please note that per [issue #1](https://github.com/erasche/docker-webapollo/issues/1), the port you use to access WebApollo MUST be 8080.
 
@@ -41,7 +51,12 @@ $ fig build
 $ fig up
 ```
 
-to build and bring up the two linked containers.
+to build and bring up the two linked containers. To load the Pythium data, execute the following before `fig up`
+
+```console
+$ wget http://icebox.lbl.gov/webapollo/data/pyu_data.tgz
+$ tar xvfz pyu_data.tgz
+```
 
 ## TODO:
 
