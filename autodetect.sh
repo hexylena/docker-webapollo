@@ -39,18 +39,16 @@ process_file(){
 			$WEBAPOLLO_ROOT/client/apollo/bin/add-webapollo-plugin.pl \
 				-i $JBROWSE_DATA_DIR/trackList.json
 		;;
-		bai)
-			mkdir -p $JBROWSE_DATA_DIR/bam
-			cp $full_filename $JBROWSE_DATA_DIR/bam
-		;;
 		bam)
+			echo "BAM File $full_filename"
 			mkdir -p $JBROWSE_DATA_DIR/bam
 			cp $full_filename $JBROWSE_DATA_DIR/bam
+			cp ${full_filename}.bai $JBROWSE_DATA_DIR/bam
 			# TODO: figure out a better way of handling this.
 			$JBROWSE_DIR/bin/add-bam-track.pl \
 				--bam_url bam/${base_filename} \
-				--label "$filename" \
-				--key "$filename" \
+				--label "BAM_$filename" \
+				--key "BAM $filename" \
 				-i $JBROWSE_DATA_DIR/trackList.json
 		;;
 		bw)
@@ -58,8 +56,8 @@ process_file(){
 			cp $full_filename $JBROWSE_DATA_DIR/bigwig
 			$JBROWSE_DIR/bin/add-bw-track.pl \
 				--bw_url bigwig/${base_filename} \
-				--label "$filename" \
-				--key "$filename" \
+				--label "BigWig_$filename" \
+				--key "BigWig $filename" \
 				-i $JBROWSE_DATA_DIR/trackList.json
 		;;
 		gff)
@@ -105,4 +103,5 @@ process_file(){
 export -f process_file
 # Must process fasta files before non-fasta files
 find $1 -type f -name '*.fa' -exec bash -c 'process_file "$0"' {} \;
+# TODO: sort data before processing
 find $1 -type f \! -name '*.fa' -exec bash -c 'process_file "$0"' {} \;
