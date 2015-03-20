@@ -30,8 +30,6 @@ and you'll see the output of tomcat/webapollo as they boot. By default, the
 container includes Pythium Utlimum data. WebApollo will boot, and be available
 on [http://localhost:8080/apollo/](http://localhost:8080/apollo/). The username is `web_apollo_admin` and the password is `password`.
 
-Please note that per [issue #1](https://github.com/erasche/docker-webapollo/issues/1), the port you use to access WebApollo MUST be 8080.
-
 ## Building the Container Locally
 
 A `fig.yml` file is available for building the container. Simply run:
