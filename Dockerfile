@@ -13,13 +13,12 @@ RUN cpanm --force Devel::Size Heap::Simple::XS
 
 RUN mkdir -p /webapollo/ && git clone https://github.com/GMOD/Apollo /webapollo/ && \
     cd /webapollo/ && \
+    git checkout jspforlogin201  && \
     cp sample_config.properties config.properties && \
     cp sample_config.xml config.xml && \
     cp sample_log4j2.json log4j2.json && \
     cp sample_log4j2-test.json log4j2-test.json && \
     ./apollo deploy
-
-RUN wget http://icebox.lbl.gov/webapollo/data/pyu_data.tgz -O /usr/local/tomcat/pyu_data.tgz
 
 ENV DEPLOY_DIR /usr/local/tomcat/webapps/apollo/
 
@@ -30,5 +29,7 @@ RUN mkdir -p $DEPLOY_DIR && \
 
 ADD startup.sh /bin/
 ADD autodetect.sh /bin/
-RUN chmod +x /bin/startup.sh /bin/autodetect.sh
+RUN chmod +x /bin/startup.sh /bin/autodetect.sh && mkdir -p /data
+
+VOLUME "/data"
 CMD ["/bin/startup.sh"]
