@@ -7,6 +7,7 @@ process_file(){
 	base_filename=$(basename "$1")
 	extension="${base_filename##*.}"
 	filename="${base_filename%.*}"
+	echo "Processing $filename.$extension";
 	
 	case $extension in
 		fa)
@@ -66,21 +67,26 @@ process_file(){
 			$WEBAPOLLO_ROOT/tools/data/split_gff_by_source.pl \
 				-i $full_filename -d $SPLITDIR
 
+			echo ">> Split gff data"
 			# TODO: better autodiscovery
 			for splitfile in $SPLITDIR/*;
 			do
-				case $splitfile in
+				echo ">>>> GFF3 Parser: $splitfile"
+				split_basename=$(basename $splitfile .gff)
+				case $split_basename in
 				blast*)
+					echo ">>>> [blast]"
 					$JBROWSE_DIR/bin/flatfile-to-json.pl \
 						--gff $splitfile \
 						--arrowheadClass webapollo-arrowhead  \
 						--subfeatureClasses '{"match_part": "darkblue-80pct"}' \
-						--type match \
+						--type match_part \
 						--className container-10px \
 						--trackLabel $(basename $splitfile .gff)\
 						--out $JBROWSE_DATA_DIR
 				;;
 				maker*)
+					echo ">>>> [maker]"
 					$JBROWSE_DIR/bin/flatfile-to-json.pl \
 						--gff $splitfile \
 						--arrowheadClass trellis-arrowhead \
@@ -93,9 +99,10 @@ process_file(){
 			done
 		;;
 	esac
-	echo "Processing $filename $extension";
 }
 
 # http://stackoverflow.com/q/4321456
 export -f process_file
-find $1 -type f -exec bash -c 'process_file "$0"' {} \;
+# Must process fasta files before non-fasta files
+find $1 -type f -name '*.fa' -exec bash -c 'process_file "$0"' {} \;
+find $1 -type f \! -name '*.fa' -exec bash -c 'process_file "$0"' {} \;
