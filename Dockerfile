@@ -29,6 +29,6 @@ RUN mkdir -p $DEPLOY_DIR && \
     jar xvf apollo-1.0.5-SNAPSHOT.war
 
 ADD startup.sh /bin/
-ADD process.sh /bin/
-RUN chmod +x /bin/startup.sh /bin/process.sh
+ADD autodetect.sh /bin/
+RUN chmod +x /bin/startup.sh /bin/autodetect.sh
 CMD ["/bin/startup.sh"]
