@@ -13,7 +13,6 @@ RUN cpanm --force Devel::Size Heap::Simple::XS
 
 RUN mkdir -p /webapollo/ && git clone https://github.com/GMOD/Apollo /webapollo/ && \
     cd /webapollo/ && \
-    git checkout jspforlogin201  && \
     cp sample_config.properties config.properties && \
     cp sample_config.xml config.xml && \
     cp sample_log4j2.json log4j2.json && \
