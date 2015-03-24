@@ -1,5 +1,5 @@
 #!/bin/bash
-
+. /bin/common.sh
 # Attempt to autodetect files in a folder and load them into WebApollo
 
 process_file(){

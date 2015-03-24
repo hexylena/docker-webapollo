@@ -108,5 +108,9 @@ any tracks. You can fix that by running a script to add specific users to a
 track:
 
 ```console
-$ fig run webapollo /bin/register-user.sh 'username@fqdn.edu'
+$ docker ps | grep webapollo 
+$ # Get the running image ID
+$ docker exec -it d0b682d8a9ac /bin/bash
+root@d0b682d8a9ac:/usr/local/tomcat# /bin/register-user.sh username@fqdn.edu
+Processing Annotations-Bob
 ```
