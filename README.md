@@ -59,18 +59,16 @@ $ tar xvfz pyu_data.tgz
 ## TODO:
 
 - Blat
-- OAuth?
-- ability to add users via ENV
 - Turning WebApollo into a Galaxy [Interactive Environment](https://wiki.galaxyproject.org/Admin/IEs?highlight=%28interactive%29%7C%28environment%29)
 
 ## Environment Variables
 
 Several configurable parameters are exposed as environment variables that can be set per-container. If you need more, just create a new [GitHub issue](https://github.com/erasche/docker-webapollo/issues/new).
 
-Variable              | Use
---------------------- | ---
-APOLLO_ORGANISM       | Organism name for use in main display
-APOLLO_AUTHENTICATION | Authentication class name. [Docs](http://webapollo.readthedocs.org/en/latest/Configure/#database-configuration)
-DB_IS_CHADO           | Not currently used, but in the future will inform Apollo that the database is a Chado instance and can be used for persisting annotations
-APOLLO_USERNAME       | Default username for logging in. This account is added automatically, and permissions on any fasta files are automatically given to that user.
-APOLLO_PASSWORD       | Default password for logging in.
+Variable                | Use
+----------------------- | ---
+`APOLLO_ORGANISM`       | Organism name for use in main display
+`APOLLO_AUTHENTICATION` | Authentication class name. [Docs](http://webapollo.readthedocs.org/en/latest/Configure/#database-configuration)
+`DB_IS_CHADO`           | Not currently used, but in the future will inform Apollo that the database is a Chado instance and can be used for persisting annotations
+`APOLLO_USERNAME`       | Default username for logging in. This account is added automatically, and permissions on any fasta files are automatically given to that user.
+`APOLLO_PASSWORD`       | Default password for logging in.
