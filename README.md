@@ -72,3 +72,41 @@ Variable                | Use
 `DB_IS_CHADO`           | Not currently used, but in the future will inform Apollo that the database is a Chado instance and can be used for persisting annotations
 `APOLLO_USERNAME`       | Default username for logging in. This account is added automatically, and permissions on any fasta files are automatically given to that user.
 `APOLLO_PASSWORD`       | Default password for logging in.
+
+
+## `REMOTE_USER` Authentication
+
+Some sites prefer `REMOTE_USER` type authentication through an upstream proxy
+like Apache or Nginx.
+
+In order to use this type of authentication, you'll need to do a couple things. It's highly recommended that you use fig (or similar) to manage the images at this point:
+
+Here's an example fig.yml:
+
+```yaml
+db:
+    image: postgres:9.4
+webapollo:
+    image: erasche/webapollo
+    links:
+        - db
+    ports:
+        - "8080:8080"
+    volumes:
+        - ./pyu_data:/data
+    environment:
+        APOLLO_AUTHENTICATION: org.bbop.apollo.web.user.remoteuser.RemoteUserAuthentication
+```
+
+This will enable the RemoteUser authentication. Please make sure your upstream
+proxy (e.g. apache) is sending a username in the `REMOTE_USER` header. (You can
+check with a command like `sudo tcpdump -A -s 0 'tcp port 8080' -i lo` and
+looking for the request headers)
+
+Once you log in, you'll get a permission denied error and not be able to see
+any tracks. You can fix that by running a script to add specific users to a
+track:
+
+```console
+$ fig run webapollo /bin/register-user.sh 'username@fqdn.edu'
+```

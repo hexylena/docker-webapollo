@@ -1,13 +1,6 @@
 #!/bin/bash
 
-export PGUSER=postgres
-export PGPASSWORD=password
-
-export WEBAPOLLO_DATABASE=web_apollo_users
-export JBROWSE_DATA_DIR=/opt/apollo/jbrowse/data
-export WEBAPOLLO_DATA_DIR=/opt/apollo/annotations
-export WEBAPOLLO_ROOT=/webapollo/
-export JBROWSE_DIR=$WEBAPOLLO_ROOT/jbrowse-download/
+. /bin/common.sh
 
 echo "Sleeping on Postgres at $DB_PORT_5432_TCP_ADDR:$DB_PORT_5432_TCP_PORT"
 until nc -z $DB_PORT_5432_TCP_ADDR $DB_PORT_5432_TCP_PORT; do

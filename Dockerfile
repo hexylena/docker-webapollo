@@ -35,9 +35,11 @@ RUN mkdir -p $DEPLOY_DIR && \
     cd $DEPLOY_DIR && \
     jar xvf apollo-1.0.5-SNAPSHOT.war
 
+ADD common.sh /bin/
+ADD register-user.sh /bin/
 ADD startup.sh /bin/
 ADD autodetect.sh /bin/
-RUN chmod +x /bin/startup.sh /bin/autodetect.sh && mkdir -p /data
+RUN chmod +x /bin/common.sh /bin/register-user.sh /bin/startup.sh /bin/autodetect.sh && mkdir -p /data
 
 VOLUME "/data"
 CMD ["/bin/startup.sh"]
