@@ -28,7 +28,7 @@ process_file(){
 				-D $WEBAPOLLO_DATABASE \
 				-U $PGUSER \
 				-P $PGPASSWORD \
-				-u $WEBAPOLLO_USER \
+				-u $APOLLO_USERNAME \
 				-t /tmp/seqids.txt \
 				-a
 
