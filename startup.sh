@@ -32,7 +32,6 @@ psql -U $PGUSER $WEBAPOLLO_DATABASE -h $DB_PORT_5432_TCP_ADDR < $WEBAPOLLO_ROOT/
 
 mkdir -p /opt/apollo/annotations /opt/apollo/jbrowse/data/
 # Need JBlib.pm
-export PERL5LIB=/webapollo/jbrowse-download/src/perl5
 $WEBAPOLLO_ROOT/tools/user/add_user.pl -D $WEBAPOLLO_DATABASE -U $PGUSER -P $PGPASSWORD -u $APOLLO_USERNAME -p $APOLLO_PASSWORD -H $DB_PORT_5432_TCP_ADDR
 
 /bin/autodetect.sh /data
