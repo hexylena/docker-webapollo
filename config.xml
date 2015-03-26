@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server_configuration>
+	<gbol_mapping>/config/mapping.xml</gbol_mapping>
+	<datastore_directory>ENTER_DATASTORE_DIRECTORY_HERE</datastore_directory>
+	<default_minimum_intron_size>1</default_minimum_intron_size>
+	<history_size>0</history_size>
+	<overlapper_class>org.bbop.apollo.web.overlap.OrfOverlapper</overlapper_class>
+	<track_name_comparator>/config/track_name_comparator.js</track_name_comparator>
+	<use_cds_for_new_transcripts>true</use_cds_for_new_transcripts>
+	<use_pure_memory_store>true</use_pure_memory_store>
+	<user>
+		<database>
+			<driver>org.postgresql.Driver</driver>
+			<url>jdbc:postgresql:web_apollo_users</url>
+			<username>web_apollo_users_admin</username>
+			<password>web_apollo_users_admin</password>
+		</database>
+		<authentication_class>org.bbop.apollo.web.user.remoteuser.RemoteUser</authentication_class>
+		<auto_add_users>true</auto_add_users>
+	</user>
+	<tracks>
+		<track>
+			<!--<refseqs>/opt/apollo/jbrowse/data/seq/refSeqs.json</refseqs>-->
+			<!--<data>/opt/apollo/jbrowse/data/</data>-->
+			<annotation_track_name>Annotations</annotation_track_name>
+			<organism>Apis cerana</organism>
+			<sequence_type>sequence:scaffold</sequence_type>
+			<translation_table>/config/translation_tables/ncbi_1_translation_table.txt</translation_table>
+		</track>
+	</tracks>
+	<canned_comments>/config/canned_comments.xml</canned_comments>
+	<annotation_info_editor>
+		<annotation_info_editor_group feature_types="default">
+			<status>
+				<status_flag>Approved</status_flag>
+				<status_flag>Needs review</status_flag>
+			</status>
+			<attributes />
+			<dbxrefs />
+			<pubmed_ids />
+			<go_ids />
+			<comments />
+		</annotation_info_editor_group>
+	</annotation_info_editor>
+	<sequence_search_tools>
+		<sequence_search_tool>
+			<key>BLAT nucleotide</key>
+			<class>org.bbop.apollo.tools.seq.search.blat.BlatCommandLineNucleotideToNucleotide</class>
+			<config>/config/blat_config.xml</config>
+		</sequence_search_tool>
+		<sequence_search_tool>
+			<key>BLAT protein</key>
+			<class>org.bbop.apollo.tools.seq.search.blat.BlatCommandLineProteinToNucleotide</class>
+			<config>/config/blat_config.xml</config>
+		</sequence_search_tool>
+	</sequence_search_tools>
+	<data_adapters>
+		<data_adapter>
+			<key>GFF3</key>
+			<class>org.bbop.apollo.web.dataadapter.gff3.Gff3DataAdapter</class>
+			<permission>read</permission>
+			<config>/config/gff3_config.xml</config>
+			<options>output=file&amp;format=gzip</options>
+		</data_adapter>
+		<data_adapter>
+			<key>Chado</key>
+			<class>org.bbop.apollo.web.dataadapter.chado.ChadoDataAdapter</class>
+			<permission>publish</permission>
+			<config>/config/chado_config.xml</config>
+			<options>display_features=false</options>
+		</data_adapter>
+		<data_adapter_group>
+			<key>FASTA</key>
+			<permission>read</permission>
+			<data_adapter>
+				<key>peptide</key>
+				<class>org.bbop.apollo.web.dataadapter.fasta.FastaDataAdapter</class>
+				<permission>read</permission>
+				<config>/config/fasta_config.xml</config>
+				<options>output=file&amp;format=gzip&amp;seqType=peptide</options>
+			</data_adapter>
+			<data_adapter>
+				<key>cDNA</key>
+				<class>org.bbop.apollo.web.dataadapter.fasta.FastaDataAdapter</class>
+				<permission>read</permission>
+				<config>/config/fasta_config.xml</config>
+				<options>output=file&amp;format=gzip&amp;seqType=cdna</options>
+			</data_adapter>
+			<data_adapter>
+				<key>CDS</key>
+				<class>org.bbop.apollo.web.dataadapter.fasta.FastaDataAdapter</class>
+				<permission>read</permission>
+				<config>/config/fasta_config.xml</config>
+				<options>output=file&amp;format=gzip&amp;seqType=cds</options>
+			</data_adapter>
+		</data_adapter_group>
+	</data_adapters>
+</server_configuration>
