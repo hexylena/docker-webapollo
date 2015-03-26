@@ -25,6 +25,8 @@ sed -i "s|ENTER_PASSWORD|$PGPASSWORD|g" $HIBERNATE_CONFIG_FILE
 
 XML_CONFIG_FILE=$DEPLOY_DIR/config/config.xml
 sed -i "s|<authentication_class>.*</authentication_class>|<authentication_class>$APOLLO_AUTHENTICATION</authentication_class>|g" $XML_CONFIG_FILE
+sed -i "s|<organism>.*</organism>|<organism>$APOLLO_ORGANISM</organism>|g" $XML_CONFIG_FILE
+sed -i "s|<translation_table>.*</translation_table>|<translation_table>/config/translation_tables/ncbi_${APOLLO_TRANSLATION_TABLE}_translation_table.txt</translation_table>|g" $XML_CONFIG_FILE
 
 # TODO wait for endpoint to be alive
 

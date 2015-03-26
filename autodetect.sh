@@ -90,9 +90,15 @@ process_file(){
 						--arrowheadClass trellis-arrowhead \
 						--subfeatureClasses '{"wholeCDS": null, "CDS":"brightgreen-80pct", "UTR": "darkgreen-60pct", "exon":"container-100pct"}' \
 						--className container-16px \
-						--type mRNA \
 						--trackLabel $(basename $splitfile .gff) \
 						--out $JBROWSE_DATA_DIR
+				;;
+				*)
+					$JBROWSE_DIR/bin/flatfile-to-json.pl \
+						--gff $splitfile \
+						--trackLabel $(basename $splitfile .gff) \
+						--out $JBROWSE_DATA_DIR
+				;;
 				esac
 			done
 		;;

@@ -65,13 +65,14 @@ $ tar xvfz pyu_data.tgz
 
 Several configurable parameters are exposed as environment variables that can be set per-container. If you need more, just create a new [GitHub issue](https://github.com/erasche/docker-webapollo/issues/new).
 
-Variable                | Use
------------------------ | ---
-`APOLLO_ORGANISM`       | Organism name for use in main display
-`APOLLO_AUTHENTICATION` | Authentication class name. [Docs](http://webapollo.readthedocs.org/en/latest/Configure/#database-configuration)
-`DB_IS_CHADO`           | Not currently used, but in the future will inform Apollo that the database is a Chado instance and can be used for persisting annotations
-`APOLLO_USERNAME`       | Default username for logging in. This account is added automatically, and permissions on any fasta files are automatically given to that user.
-`APOLLO_PASSWORD`       | Default password for logging in.
+Variable                   | Use
+-------------------------- | ---
+`APOLLO_ORGANISM`          | Organism name for use in main display
+`APOLLO_AUTHENTICATION`    | Authentication class name. [Docs](http://webapollo.readthedocs.org/en/latest/Configure/#database-configuration)
+`APOLLO_USERNAME`          | Default username for logging in. This account is added automatically, and permissions on any fasta files are automatically given to that user.
+`APOLLO_PASSWORD`          | Default password for logging in.
+`APOLLO_TRANSLATION_TABLE` | NCBI Translation Table ID
+`DB_IS_CHADO`              | Not currently used, but in the future will inform Apollo that the database is a Chado instance and can be used for persisting annotations
 
 
 ## `REMOTE_USER` Authentication
