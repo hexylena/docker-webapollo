@@ -19,6 +19,9 @@ RUN mkdir -p /webapollo/ && git clone https://github.com/erasche/Apollo /webapol
     cp sample_hibernate.xml hibernate.xml && \
     cp sample_log4j2.json log4j2.json && \
     cp sample_log4j2-test.json log4j2-test.json && \
+    cp default_canned_comments.xml canned_comments.xml && \
+    cp default_fasta_config.xml fasta_config.xml && \
+    cp default_gff3_config.xml gff3_config.xml && \
     ./apollo deploy
 
 # TODO depend on CATALINA_HOME
