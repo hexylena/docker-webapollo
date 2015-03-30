@@ -8,8 +8,8 @@ RUN apt-get -qq update --fix-missing
 RUN apt-get --no-install-recommends -y install git nodejs-legacy build-essential maven2 openjdk-7-jdk libpq-dev postgresql-common postgresql-client xmlstarlet netcat
 
 RUN curl -L http://cpanmin.us | perl - App::cpanminus
-RUN cpanm DateTime Text::Markdown DBI DBD::Pg Term::ReadKey Crypt::PBKDF2 JSON Digest::Crc32 Hash::Merge PerlIO::gzip Heap::Simple Bio::GFF3::LowLevel::Parser File::Next
-RUN cpanm --force Devel::Size Heap::Simple::XS
+RUN cpanm DateTime Text::Markdown DBI DBD::Pg Term::ReadKey Crypt::PBKDF2 JSON Digest::Crc32 Hash::Merge PerlIO::gzip Heap::Simple Bio::GFF3::LowLevel::Parser File::Next && rm -rf /root/.cpanm/
+RUN cpanm --force Devel::Size Heap::Simple::XS && rm -rf /root/.cpanm/
 
 RUN mkdir -p /webapollo/ && git clone https://github.com/GMOD/Apollo /webapollo/ && \
     cd /webapollo/ && \
