@@ -50,7 +50,7 @@ process_file(){
 				--bam_url bam/${base_filename} \
 				--label "BAM_$filename" \
 				--key "BAM $filename" \
-				--config '{"category": "BAM"}' \
+				--config '{"category": "BAM", "type": "JBrowse/View/Track/Alignments2"}' \
 				-i $JBROWSE_DATA_DIR/trackList.json
 		;;
 		bw)
@@ -60,7 +60,7 @@ process_file(){
 				--bw_url bigwig/${base_filename} \
 				--label "BigWig_$filename" \
 				--key "BigWig $filename" \
-				--config '{"category": "Quantitative"}' \
+				--config '{"category": "Quantitative", "type": "JBrowse/View/Track/Wiggle/XYPlot"}' \
 				-i $JBROWSE_DATA_DIR/trackList.json
 		;;
 		gff)
@@ -102,21 +102,21 @@ process_file(){
 					$JBROWSE_DIR/bin/flatfile-to-json.pl \
 						--gff $splitfile \
 						--trackLabel $(basename $splitfile .gff) \
-						--config '{"category": "Protein Domains"}' \
+						--config '{"category": "Protein Domains", "description": "signature_desc"}' \
 						--out $JBROWSE_DATA_DIR
 				;;
 				TMHMM*)
 					$JBROWSE_DIR/bin/flatfile-to-json.pl \
 						--gff $splitfile \
 						--trackLabel $(basename $splitfile .gff) \
-						--config '{"category": "Transmembrane Domains"}' \
+						--config '{"category": "Transmembrane Domains", "description": "signature_desc"}' \
 						--out $JBROWSE_DATA_DIR
 				;;
 				*)
 					$JBROWSE_DIR/bin/flatfile-to-json.pl \
 						--gff $splitfile \
 						--trackLabel $(basename $splitfile .gff) \
-						--config '{"category": "Other"}' \
+						--config '{"category": "Other", "description": "signature_desc"}' \
 						--out $JBROWSE_DATA_DIR
 				;;
 				esac
