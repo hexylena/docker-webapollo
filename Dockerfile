@@ -48,3 +48,6 @@ RUN chmod +x /bin/common.sh /bin/startup.sh /bin/autodetect.sh && mkdir -p /data
 
 VOLUME "/data"
 CMD ["/bin/startup.sh"]
+
+# LOCAL CHANGE, DO NOT PUBLISH
+ADD config.xml /usr/local/tomcat/webapps/apollo/config/config.xml
