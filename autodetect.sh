@@ -102,21 +102,21 @@ process_file(){
 					$JBROWSE_DIR/bin/flatfile-to-json.pl \
 						--gff $splitfile \
 						--trackLabel $(basename $splitfile .gff) \
-						--config '{"category": "Protein Domains", "description": "signature_desc"}' \
+						--config '{"category": "Protein Domains", "style": {"description": "signature_desc"}}' \
 						--out $JBROWSE_DATA_DIR
 				;;
 				TMHMM*)
 					$JBROWSE_DIR/bin/flatfile-to-json.pl \
 						--gff $splitfile \
 						--trackLabel $(basename $splitfile .gff) \
-						--config '{"category": "Transmembrane Domains", "description": "signature_desc"}' \
+						--config '{"category": "Transmembrane Domains", "style": {"description": "signature_desc"}}}' \
 						--out $JBROWSE_DATA_DIR
 				;;
 				*)
 					$JBROWSE_DIR/bin/flatfile-to-json.pl \
 						--gff $splitfile \
 						--trackLabel $(basename $splitfile .gff) \
-						--config '{"category": "Other", "description": "signature_desc"}' \
+						--config '{"category": "Other", "style": {"description": "signature_desc"}}}' \
 						--out $JBROWSE_DATA_DIR
 				;;
 				esac
