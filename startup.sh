@@ -28,6 +28,9 @@ sed -i "s|<authentication_class>.*</authentication_class>|<authentication_class>
 sed -i "s|<organism>.*</organism>|<organism>$APOLLO_ORGANISM</organism>|g" $XML_CONFIG_FILE
 sed -i "s|<translation_table>.*</translation_table>|<translation_table>/config/translation_tables/ncbi_${APOLLO_TRANSLATION_TABLE}_translation_table.txt</translation_table>|g" $XML_CONFIG_FILE
 
+ANNOT_TRACK_JS=$DEPLOY_DIR/jbrowse/plugins/WebApollo/js/View/Track/AnnotTrack.js
+sed -i "s|var gserv = 'http://golr.geneontology.org/solr/'|var gserv = '$GOLR_URL'|g" $ANNOT_TRACK_JS
+
 # TODO wait for endpoint to be alive
 
 psql -U $PGUSER $WEBAPOLLO_DATABASE -h $DB_PORT_5432_TCP_ADDR < $WEBAPOLLO_ROOT/tools/user/user_database_postgresql.sql
