@@ -35,6 +35,9 @@ ENV DB_IS_CHADO false
 ENV APOLLO_USERNAME web_apollo_admin
 ENV APOLLO_PASSWORD password
 ENV APOLLO_TRANSLATION_TABLE 1
+# TODO: This is *extremely* fragile, needs to be re-worked, but the deploy step
+# is much too slow for startup.
+ENV GOLR_URL http://golr.berkeleybop.org/
 
 RUN mkdir -p $DEPLOY_DIR && \
     cp /webapollo/target/apollo-1.0.5-SNAPSHOT.war $DEPLOY_DIR && \

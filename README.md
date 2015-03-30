@@ -73,6 +73,7 @@ Variable                   | Use
 `APOLLO_PASSWORD`          | Default password for logging in.
 `APOLLO_TRANSLATION_TABLE` | NCBI Translation Table ID
 `DB_IS_CHADO`              | Not currently used, but in the future will inform Apollo that the database is a Chado instance and can be used for persisting annotations
+`GOLR_URL`                 | URL for the GOLR server
 
 
 ## `REMOTE_USER` Authentication
