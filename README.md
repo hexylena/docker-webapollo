@@ -115,3 +115,14 @@ $ docker exec -it d0b682d8a9ac /bin/bash
 root@d0b682d8a9ac:/usr/local/tomcat# /bin/register-user.sh username@fqdn.edu
 Processing Annotations-Bob
 ```
+
+## Track Configuration
+
+Currently the image uses an "Autodetection" tool in order to automatically load
+available track data and attempt to present it in a useful manner. However,
+sites may want a more customisable experience.
+
+The startup script can easily be overridden by providing a shell script named
+"autodetect.sh" in the root of the mounted volume. You can view [the
+default](https://github.com/erasche/docker-webapollo/blob/master/autodetect.sh)
+script for ideas of how to extend your version.

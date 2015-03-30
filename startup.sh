@@ -36,7 +36,12 @@ mkdir -p /opt/apollo/annotations /opt/apollo/jbrowse/data/
 # Need JBlib.pm
 $WEBAPOLLO_ROOT/tools/user/add_user.pl -D $WEBAPOLLO_DATABASE -U $PGUSER -P $PGPASSWORD -u $APOLLO_USERNAME -p $APOLLO_PASSWORD -H $DB_PORT_5432_TCP_ADDR
 
-/bin/autodetect.sh /data
+if [ -e "/data/autodetect.sh" ];
+then
+    /data/autodetect.sh /data
+else
+    /bin/autodetect.sh /data
+fi
 
 # Run tomcat and tail logs
 cd $CATALINA_HOME && ./bin/catalina.sh run
