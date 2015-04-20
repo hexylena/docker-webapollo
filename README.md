@@ -65,10 +65,65 @@ $ tar xvfz pyu_data.tgz
 
 Several configurable parameters are exposed as environment variables that can be set per-container. If you need more, just create a new [GitHub issue](https://github.com/erasche/docker-webapollo/issues/new).
 
-Variable                | Use
------------------------ | ---
-`APOLLO_ORGANISM`       | Organism name for use in main display
-`APOLLO_AUTHENTICATION` | Authentication class name. [Docs](http://webapollo.readthedocs.org/en/latest/Configure/#database-configuration)
-`DB_IS_CHADO`           | Not currently used, but in the future will inform Apollo that the database is a Chado instance and can be used for persisting annotations
-`APOLLO_USERNAME`       | Default username for logging in. This account is added automatically, and permissions on any fasta files are automatically given to that user.
-`APOLLO_PASSWORD`       | Default password for logging in.
+Variable                   | Use
+-------------------------- | ---
+`APOLLO_ORGANISM`          | Organism name for use in main display
+`APOLLO_AUTHENTICATION`    | Authentication class name. [Docs](http://webapollo.readthedocs.org/en/latest/Configure/#database-configuration)
+`APOLLO_USERNAME`          | Default username for logging in. This account is added automatically, and permissions on any fasta files are automatically given to that user.
+`APOLLO_PASSWORD`          | Default password for logging in.
+`APOLLO_TRANSLATION_TABLE` | NCBI Translation Table ID
+`DB_IS_CHADO`              | Not currently used, but in the future will inform Apollo that the database is a Chado instance and can be used for persisting annotations
+`GOLR_URL`                 | URL for the GOLR server
+
+
+## `REMOTE_USER` Authentication
+
+Some sites prefer `REMOTE_USER` type authentication through an upstream proxy
+like Apache or Nginx.
+
+In order to use this type of authentication, you'll need to do a couple things. It's highly recommended that you use fig (or similar) to manage the images at this point:
+
+Here's an example fig.yml:
+
+```yaml
+db:
+    image: postgres:9.4
+webapollo:
+    image: erasche/webapollo
+    links:
+        - db
+    ports:
+        - "8080:8080"
+    volumes:
+        - ./pyu_data:/data
+    environment:
+        APOLLO_AUTHENTICATION: org.bbop.apollo.web.user.remoteuser.RemoteUserAuthentication
+```
+
+This will enable the RemoteUser authentication. Please make sure your upstream
+proxy (e.g. apache) is sending a username in the `REMOTE_USER` header. (You can
+check with a command like `sudo tcpdump -A -s 0 'tcp port 8080' -i lo` and
+looking for the request headers)
+
+Once you log in, you'll get a permission denied error and not be able to see
+any tracks. You can fix that by running a script to add specific users to a
+track:
+
+```console
+$ docker ps | grep webapollo 
+$ # Get the running image ID
+$ docker exec -it d0b682d8a9ac /bin/bash
+root@d0b682d8a9ac:/usr/local/tomcat# /bin/register-user.sh username@fqdn.edu
+Processing Annotations-Bob
+```
+
+## Track Configuration
+
+Currently the image uses an "Autodetection" tool in order to automatically load
+available track data and attempt to present it in a useful manner. However,
+sites may want a more customisable experience.
+
+The startup script can easily be overridden by providing a shell script named
+"autodetect.sh" in the root of the mounted volume. You can view [the
+default](https://github.com/erasche/docker-webapollo/blob/master/autodetect.sh)
+script for ideas of how to extend your version.

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+. /bin/common.sh
 # Attempt to autodetect files in a folder and load them into WebApollo
 
 process_file(){
@@ -34,6 +34,7 @@ process_file(){
 
 			$JBROWSE_DIR/bin/prepare-refseqs.pl \
 				--fasta $full_filename \
+				--config '{"category": "Reference Sequence"}' \
 				--out $JBROWSE_DATA_DIR
 
 			$WEBAPOLLO_ROOT/client/apollo/bin/add-webapollo-plugin.pl \
@@ -81,18 +82,44 @@ process_file(){
 						--type match_part \
 						--className container-10px \
 						--trackLabel $(basename $splitfile .gff)\
+						--config '{"category": "BLAST"}' \
 						--out $JBROWSE_DATA_DIR
 				;;
-				maker*)
+				maker*|GeneMark*)
 					echo ">>>> [maker]"
 					$JBROWSE_DIR/bin/flatfile-to-json.pl \
 						--gff $splitfile \
 						--arrowheadClass trellis-arrowhead \
 						--subfeatureClasses '{"wholeCDS": null, "CDS":"brightgreen-80pct", "UTR": "darkgreen-60pct", "exon":"container-100pct"}' \
 						--className container-16px \
-						--type mRNA \
 						--trackLabel $(basename $splitfile .gff) \
+						--config '{"category": "Gene Calls"}' \
 						--out $JBROWSE_DATA_DIR
+				;;
+				Hamap*|PANTHER*|PIRSF*|PRINTS*|Pfam*|ProSite*|SMART*|SUPERFAMILY*|TIGRFAM*)
+					$JBROWSE_DIR/bin/flatfile-to-json.pl \
+						--gff $splitfile \
+						--trackLabel $(basename $splitfile .gff) \
+						--config '{"category": "Protein Domains"}' \
+						--clientConfig '{"description": "signature_desc"}' \
+						--out $JBROWSE_DATA_DIR
+				;;
+				TMHMM*)
+					$JBROWSE_DIR/bin/flatfile-to-json.pl \
+						--gff $splitfile \
+						--trackLabel $(basename $splitfile .gff) \
+						--config '{"category": "Transmembrane Domains"}' \
+						--clientConfig '{"description": "signature_desc"}' \
+						--out $JBROWSE_DATA_DIR
+				;;
+				*)
+					$JBROWSE_DIR/bin/flatfile-to-json.pl \
+						--gff $splitfile \
+						--trackLabel $(basename $splitfile .gff) \
+						--config '{"category": "Other"}' \
+						--clientConfig '{"description": "signature_desc"}' \
+						--out $JBROWSE_DATA_DIR
+				;;
 				esac
 			done
 		;;

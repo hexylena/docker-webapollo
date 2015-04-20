@@ -1,13 +1,6 @@
 #!/bin/bash
 
-export PGUSER=postgres
-export PGPASSWORD=password
-
-export WEBAPOLLO_DATABASE=web_apollo_users
-export JBROWSE_DATA_DIR=/opt/apollo/jbrowse/data
-export WEBAPOLLO_DATA_DIR=/opt/apollo/annotations
-export WEBAPOLLO_ROOT=/webapollo/
-export JBROWSE_DIR=$WEBAPOLLO_ROOT/jbrowse-download/
+. /bin/common.sh
 
 echo "Sleeping on Postgres at $DB_PORT_5432_TCP_ADDR:$DB_PORT_5432_TCP_PORT"
 until nc -z $DB_PORT_5432_TCP_ADDR $DB_PORT_5432_TCP_PORT; do
@@ -32,6 +25,11 @@ sed -i "s|ENTER_PASSWORD|$PGPASSWORD|g" $HIBERNATE_CONFIG_FILE
 
 XML_CONFIG_FILE=$DEPLOY_DIR/config/config.xml
 sed -i "s|<authentication_class>.*</authentication_class>|<authentication_class>$APOLLO_AUTHENTICATION</authentication_class>|g" $XML_CONFIG_FILE
+sed -i "s|<organism>.*</organism>|<organism>$APOLLO_ORGANISM</organism>|g" $XML_CONFIG_FILE
+sed -i "s|<translation_table>.*</translation_table>|<translation_table>/config/translation_tables/ncbi_${APOLLO_TRANSLATION_TABLE}_translation_table.txt</translation_table>|g" $XML_CONFIG_FILE
+
+ANNOT_TRACK_JS=$DEPLOY_DIR/jbrowse/plugins/WebApollo/js/View/Track/AnnotTrack.js
+sed -i "s|var gserv = 'http://golr.geneontology.org/solr/'|var gserv = '$GOLR_URL'|g" $ANNOT_TRACK_JS
 
 # TODO wait for endpoint to be alive
 
@@ -39,10 +37,14 @@ psql -U $PGUSER $WEBAPOLLO_DATABASE -h $DB_PORT_5432_TCP_ADDR < $WEBAPOLLO_ROOT/
 
 mkdir -p /opt/apollo/annotations /opt/apollo/jbrowse/data/
 # Need JBlib.pm
-export PERL5LIB=/webapollo/jbrowse-download/src/perl5
 $WEBAPOLLO_ROOT/tools/user/add_user.pl -D $WEBAPOLLO_DATABASE -U $PGUSER -P $PGPASSWORD -u $APOLLO_USERNAME -p $APOLLO_PASSWORD -H $DB_PORT_5432_TCP_ADDR
 
-/bin/autodetect.sh /data
+if [ -e "/data/autodetect.sh" ];
+then
+    /data/autodetect.sh /data
+else
+    /bin/autodetect.sh /data
+fi
 
 # Run tomcat and tail logs
 cd $CATALINA_HOME && ./bin/catalina.sh run
