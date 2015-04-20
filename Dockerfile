@@ -1,7 +1,7 @@
 # WebApollo
 # VERSION 1.0
 FROM tomcat:7
-MAINTAINER Eric Rasche <rasche.eric@yandex.ru>
+MAINTAINER Eric Rasche <esr@tamu.edu>
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get -qq update --fix-missing
@@ -11,9 +11,9 @@ RUN curl -L http://cpanmin.us | perl - App::cpanminus
 RUN cpanm DateTime Text::Markdown DBI DBD::Pg Term::ReadKey Crypt::PBKDF2 JSON Digest::Crc32 Hash::Merge PerlIO::gzip Heap::Simple Bio::GFF3::LowLevel::Parser File::Next && rm -rf /root/.cpanm/
 RUN cpanm --force Devel::Size Heap::Simple::XS && rm -rf /root/.cpanm/
 
-RUN mkdir -p /webapollo/ && git clone https://github.com/erasche/Apollo /webapollo/ && \
+RUN mkdir -p /webapollo/ && git clone https://github.com/gmod/Apollo /webapollo/ && \
     cd /webapollo/ && \
-    git checkout 15aae32f76fa9e3975484d8a7d91d94364e51a7e && \
+    git checkout 1.0 && \
     cp sample_config.properties config.properties && \
     cp sample_config.xml config.xml && \
     cp sample_hibernate.xml hibernate.xml && \
@@ -24,12 +24,9 @@ RUN mkdir -p /webapollo/ && git clone https://github.com/erasche/Apollo /webapol
     cp default_gff3_config.xml gff3_config.xml && \
     ./apollo deploy
 
-# TODO depend on CATALINA_HOME
-ENV DEPLOY_DIR /usr/local/tomcat/webapps/apollo/
 ENV APOLLO_ORGANISM "Pythium ultimum"
 ENV APOLLO_AUTHENTICATION org.bbop.apollo.web.user.encryptedlocaldb.EncryptedLocalDbUserAuthentication
-# If the database is a chado DB, then the hibernate config will be modified
-# apporpriately. UNTESTED.
+# TODO: Chado
 ENV DB_IS_CHADO false
 
 ENV APOLLO_USERNAME web_apollo_admin
@@ -39,9 +36,9 @@ ENV APOLLO_TRANSLATION_TABLE 1
 # is much too slow for startup.
 ENV GOLR_URL http://golr.berkeleybop.org/
 
-RUN mkdir -p $DEPLOY_DIR && \
-    cp /webapollo/target/apollo-1.0.5-SNAPSHOT.war $DEPLOY_DIR && \
-    cd $DEPLOY_DIR && \
+RUN mkdir -p $CATALINA_HOME/webapps/apollo/ && \
+    cp /webapollo/target/apollo-1.0.5-SNAPSHOT.war $CATALINA_HOME/webapps/apollo/ && \
+    cd $CATALINA_HOME/webapps/apollo/ && \
     jar xvf apollo-1.0.5-SNAPSHOT.war
 
 ADD common.sh /bin/
@@ -51,6 +48,3 @@ RUN chmod +x /bin/common.sh /bin/startup.sh /bin/autodetect.sh && mkdir -p /data
 
 VOLUME "/data"
 CMD ["/bin/startup.sh"]
-
-# LOCAL CHANGE, DO NOT PUBLISH
-ADD config.xml /usr/local/tomcat/webapps/apollo/config/config.xml
