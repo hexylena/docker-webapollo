@@ -4,12 +4,18 @@ FROM tomcat:7
 MAINTAINER Eric Rasche <esr@tamu.edu>
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get -qq update --fix-missing
-RUN apt-get --no-install-recommends -y install git nodejs-legacy build-essential maven2 openjdk-7-jdk libpq-dev postgresql-common postgresql-client xmlstarlet netcat
+RUN apt-get -qq update --fix-missing && \
+    apt-get --no-install-recommends -y install git nodejs-legacy \
+    build-essential maven2 openjdk-7-jdk libpq-dev postgresql-common \
+    postgresql-client xmlstarlet netcat
 
-RUN curl -L http://cpanmin.us | perl - App::cpanminus
-RUN cpanm DateTime Text::Markdown DBI DBD::Pg Term::ReadKey Crypt::PBKDF2 JSON Digest::Crc32 Hash::Merge PerlIO::gzip Heap::Simple Bio::GFF3::LowLevel::Parser File::Next && rm -rf /root/.cpanm/
-RUN cpanm --force Devel::Size Heap::Simple::XS && rm -rf /root/.cpanm/
+RUN curl -L http://cpanmin.us | perl - App::cpanminus && \
+    cpanm --force Term::ReadKey && \
+    cpanm DateTime Text::Markdown DBI DBD::Pg Crypt::PBKDF2 JSON \
+    Digest::Crc32 Hash::Merge PerlIO::gzip Heap::Simple Bio::GFF3::LowLevel::Parser \
+    File::Next && \
+    cpanm --force Devel::Size Heap::Simple::XS && \
+    rm -rf /root/.cpanm/
 
 RUN mkdir -p /webapollo/ && git clone https://github.com/gmod/Apollo /webapollo/ && \
     cd /webapollo/ && \
@@ -24,17 +30,16 @@ RUN mkdir -p /webapollo/ && git clone https://github.com/gmod/Apollo /webapollo/
     cp default_gff3_config.xml gff3_config.xml && \
     ./apollo deploy
 
-ENV APOLLO_ORGANISM "Pythium ultimum"
-ENV APOLLO_AUTHENTICATION org.bbop.apollo.web.user.encryptedlocaldb.EncryptedLocalDbUserAuthentication
 # TODO: Chado
-ENV DB_IS_CHADO false
-
-ENV APOLLO_USERNAME web_apollo_admin
-ENV APOLLO_PASSWORD password
-ENV APOLLO_TRANSLATION_TABLE 1
-# TODO: This is *extremely* fragile, needs to be re-worked, but the deploy step
-# is much too slow for startup.
-ENV GOLR_URL http://golr.berkeleybop.org/
+# TODO: GOLR_URL: This is *extremely* fragile, needs to be re-worked, but the
+# deploy step is much too slow for startup.
+ENV APOLLO_ORGANISM="Pythium ultimum" \
+    APOLLO_AUTHENTICATION=org.bbop.apollo.web.user.encryptedlocaldb.EncryptedLocalDbUserAuthentication \
+    DB_IS_CHADO=false \
+    APOLLO_USERNAME=web_apollo_admin \
+    APOLLO_PASSWORD=password \
+    APOLLO_TRANSLATION_TABLE=1 \
+    GOLR_URL=http://golr.berkeleybop.org/
 
 RUN mkdir -p $CATALINA_HOME/webapps/apollo/ && \
     cp /webapollo/target/apollo-1.0.5-SNAPSHOT.war $CATALINA_HOME/webapps/apollo/ && \
