@@ -42,14 +42,13 @@ WebApollo will boot, and be available on
 
 ## Building the Container Locally
 
-A `fig.yml` file is available for building the container. Simply run:
+A `docker-compose.yml` file is available for building the container. Simply run:
 
 ```console
-$ fig build
-$ fig up
+$ docker-compose up -d
 ```
 
-to build and bring up the two linked containers. To load the Pythium data, execute the following before `fig up`
+to build and bring up the two linked containers. To load the Pythium data, execute the following before `docker-compose up`
 
 ```console
 $ wget http://icebox.lbl.gov/webapollo/data/pyu_data.tgz
@@ -83,7 +82,7 @@ like Apache or Nginx.
 
 In order to use this type of authentication, you'll need to do a couple things. It's highly recommended that you use fig (or similar) to manage the images at this point:
 
-Here's an example fig.yml:
+Here's an example `docker-compose.yml` appropriate for that:
 
 ```yaml
 db:
