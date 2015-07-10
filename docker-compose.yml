@@ -5,6 +5,6 @@ webapollo:
   links:
    - db
   ports:
-   - "9080:8080"
+   - "8080:8080"
   volumes:
    - ./pyu_data:/data

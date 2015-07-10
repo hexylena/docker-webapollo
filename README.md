@@ -14,26 +14,17 @@ This container is a work in progress, so please be aware of that.
 
 ## Running the Container
 
-The container is publicly available as `erasche/webapollo`. Running it requires a postgres database container which you can bring up with:
+The container is publicly available as `erasche/webapollo`. Running it requires a postgres database container.
 
-```console
-$ docker run -d --name db postgres:9.4
-```
 
-Once that container is online (give it a second or two), you can bring up the webapollo container:
-
-```console
-$ docker run -i -t --link db:db erasche/webapollo
-```
-
-and you'll see the output of tomcat/webapollo as they boot. By default, the
-container includes no data! If you would like to load the example Pythium
-Ultimum data, your launch command will be a little bit different:
+By default, the container includes no data! If you would like to load the
+example *Pythium Ultimum* data, your launch command will be a little bit
+different:
 
 ```console
 $ wget http://icebox.lbl.gov/webapollo/data/pyu_data.tgz
 $ tar xvfz pyu_data.tgz
-$ docker run -i -t -v `pwd`/pyu_data:/data --link db:db erasche/webapollo
+$ docker-compose up -d
 ````
 
 WebApollo will boot, and be available on
