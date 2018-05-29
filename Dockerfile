@@ -1,7 +1,6 @@
 # WebApollo
 # VERSION 1.0
 FROM tomcat:7
-MAINTAINER Eric Rasche <esr@tamu.edu>
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get -qq update --fix-missing && \
